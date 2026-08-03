@@ -1,26 +1,152 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   FT CULTURE SECRETARY — DESIGN TOKENS
+   Every colour, font and type step lives here. Nothing else in
+   the codebase may hardcode a hex value. See DESIGN.md.
+   ============================================================ */
+
+@theme {
+  /* --- palette --- */
+  --color-bg: #0b0b0d;
+  --color-card: #17171b;
+  --color-card-2: #1f1f25;
+  --color-line: #2c2c35;
+  --color-lime: #d9ff33;
+  --color-magenta: #ff3d8a;
+  --color-mute: #8c8c96;
+  /* Barely-there wash used only for the giant FT watermark. */
+  --color-watermark: #141418;
+
+  /* Deliberately overrides Tailwind's built-in pure #fff so that
+     `text-white` can never render pure white anywhere in the app. */
+  --color-white: #f2f2ee;
+
+  /* --- families --- */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* --- type scale --- */
+  --text-hero: clamp(2.75rem, 8vw, 6.5rem);
+  --text-hero--line-height: 0.95;
+  --text-hero--letter-spacing: -0.03em;
+
+  --text-section: clamp(1.75rem, 4vw, 3rem);
+  --text-section--line-height: 1;
+  --text-section--letter-spacing: -0.02em;
+
+  --text-statement: clamp(1.5rem, 3vw, 2.25rem);
+  --text-statement--line-height: 1.05;
+  --text-statement--letter-spacing: -0.02em;
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.5;
+
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.12em;
+
+  /* --- geometry --- */
+  --radius-card: 14px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Lime focus ring, visible on every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-lime);
+    color: var(--color-bg);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* ----------------------------------------------------------
+     THE STICKER CARD — the deck's signature motif.
+     A dark card with a hard, un-blurred offset block of accent
+     colour behind it, like a sticker peeling off the page.
+
+     NOTE: `.sticker` must NOT create a stacking context — no
+     z-index, no transform, no opacity on this element. A stacking
+     context paints its own background BEFORE its negative-z-index
+     descendants, which would flip the accent block on top of the
+     card and turn it into a solid slab of lime. Leaving it out
+     lets ::after join the ancestor context, where it paints before
+     the card background and correctly peeks out at bottom-right.
+     ---------------------------------------------------------- */
+  .sticker {
+    position: relative;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  .sticker::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    background-color: var(--sticker-accent, var(--color-lime));
+    transform: translate(4px, 4px);
+    z-index: -1;
+    transition: transform 150ms ease-out;
+  }
+
+  @media (min-width: 768px) {
+    .sticker::after {
+      transform: translate(6px, 6px);
+    }
+  }
+
+  .sticker-lime {
+    --sticker-accent: var(--color-lime);
+  }
+
+  .sticker-magenta {
+    --sticker-accent: var(--color-magenta);
+  }
+
+  /* Hover shifts the offset only — nothing else moves. */
+  @media (hover: hover) {
+    .sticker:hover::after {
+      transform: translate(6px, 6px);
+    }
+
+    @media (min-width: 768px) {
+      .sticker:hover::after {
+        transform: translate(9px, 9px);
+      }
+    }
+  }
+}
+
+/* Motion is restrained by default and absent entirely on request. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

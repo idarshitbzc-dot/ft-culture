@@ -1,65 +1,121 @@
-import Image from "next/image";
+import Link from "next/link";
+import { SiteHeader } from "@/components/SiteHeader";
+import { ButtonLink } from "@/components/primitives/Button";
+import { Chip } from "@/components/primitives/Chip";
+import { Kicker } from "@/components/primitives/Kicker";
+import { Reveal } from "@/components/primitives/Reveal";
+import { Section } from "@/components/primitives/Section";
+import { Sticker } from "@/components/primitives/Sticker";
+import { hero, initiativesTeaser, pov } from "@/content/landing";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <SiteHeader />
+      <main>
+        {/* ---------------- HERO ---------------- */}
+        <section className="relative flex min-h-[calc(100svh-3.5rem)] items-center overflow-hidden px-5 py-16 sm:px-8">
+          {/* Watermark is confined to the right edge and only shown at lg+,
+              where the headline column is capped well clear of it. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 right-[-2rem] hidden -translate-y-1/2 select-none font-display text-[24rem] leading-none font-black text-watermark lg:block xl:text-[30rem]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            {hero.watermark}
+          </span>
+
+          <div className="relative mx-auto w-full max-w-6xl">
+            <div className="max-w-full lg:max-w-[58%]">
+              <Reveal>
+                <Kicker tone="lime">{hero.kicker}</Kicker>
+              </Reveal>
+
+              <Reveal index={1}>
+                <h1 className="mt-6 font-display text-hero font-black uppercase">
+                  {hero.headline.map((line, i) => (
+                    <span
+                      key={line}
+                      className={`block ${i === 2 ? "text-lime" : "text-white"}`}
+                    >
+                      {line}
+                    </span>
+                  ))}
+                </h1>
+              </Reveal>
+
+              <Reveal index={2}>
+                <p className="mt-6 max-w-lg text-body italic text-mute">
+                  {hero.subline}
+                </p>
+              </Reveal>
+
+              <Reveal index={3}>
+                <div className="mt-10">
+                  <div className="h-1 w-16 bg-magenta" />
+                  <p className="mt-4 font-display text-statement font-black uppercase text-white">
+                    {hero.name}
+                  </p>
+                  <Chip className="mt-4">{hero.role}</Chip>
+                </div>
+              </Reveal>
+
+              <Reveal index={4}>
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-start">
+                  <ButtonLink href={hero.primaryCta.href}>
+                    {hero.primaryCta.label}
+                  </ButtonLink>
+                  <ButtonLink href={hero.secondaryCta.href} variant="outline">
+                    {hero.secondaryCta.label}
+                  </ButtonLink>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- POV ---------------- */}
+        <Section>
+          <Reveal>
+            <Chip variant="magenta">{pov.chip}</Chip>
+            <p className="mt-6 max-w-4xl font-display text-section font-black text-white text-balance">
+              {pov.line}
+            </p>
+          </Reveal>
+
+          <Reveal index={1} className="mt-10">
+            <Sticker accent="lime" className="max-w-2xl">
+              <p className="text-body text-white">{pov.answer}</p>
+            </Sticker>
+          </Reveal>
+        </Section>
+
+        {/* ---------------- INITIATIVES TEASER ---------------- */}
+        <Section
+          kicker={initiativesTeaser.kicker}
+          headline={initiativesTeaser.headline}
+          subline={initiativesTeaser.subline}
+        >
+          <ul className="flex flex-wrap gap-3">
+            {initiativesTeaser.items.map((item, i) => (
+              // Reveal renders a div, so it sits inside the li — a div may not
+              // be a direct child of ul.
+              <li key={item}>
+                <Reveal index={i}>
+                  <Link href={initiativesTeaser.cta.href}>
+                    <Chip variant="quiet">{item}</Chip>
+                  </Link>
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+
+          <Reveal className="mt-10">
+            <ButtonLink href={initiativesTeaser.cta.href}>
+              {initiativesTeaser.cta.label}
+            </ButtonLink>
+          </Reveal>
+        </Section>
       </main>
-    </div>
+    </>
   );
 }
