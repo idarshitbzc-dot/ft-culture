@@ -1,141 +1,333 @@
 @import "tailwindcss";
 
 /* ============================================================
-   FT CULTURE SECRETARY — DESIGN TOKENS
+   DARSHIT SHAH — FOR CULTURE SECRETARY, FT CEPT
+   CIVIC CAMPAIGN POSTER DESIGN SYSTEM
+
    Every colour, font and type step lives here. Nothing else in
-   the codebase may hardcode a hex value. See DESIGN.md.
+   the codebase may hardcode a hex value.
+
+   The page is built as a stack of printed BANDS (cream paper,
+   navy, red). A band sets --fg / --fg-mute / --rule, and every
+   component reads those through text-fg / text-fg-mute /
+   border-rule. That is why cards, chips and rules stay legible
+   on all three backgrounds without a single conditional class.
    ============================================================ */
 
 @theme {
-  /* --- palette --- */
-  --color-bg: #0b0b0d;
-  --color-card: #17171b;
-  --color-card-2: #1f1f25;
-  --color-line: #2c2c35;
-  --color-lime: #d9ff33;
-  --color-magenta: #ff3d8a;
-  --color-mute: #8c8c96;
-  /* Barely-there wash used only for the giant FT watermark. */
-  --color-watermark: #141418;
+  /* --- campaign palette ---------------------------------- */
+  --color-navy: #08233f;
+  --color-navy-deep: #061a2f; /* footer + hero vignette only */
+  --color-red: #c8322b;
+  --color-red-deep: #a5261f; /* button hover */
+  --color-cream: #f2dfb8; /* the tan paper stock */
+  --color-paper: #faf3e3; /* lighter cream: text on navy/red */
+  --color-sky: #78a9c8;
+  --color-ink: #111827;
+  /* 5.70:1 on cream — the only muted tone allowed on paper. */
+  --color-ink-mute: #4b5563;
 
-  /* Deliberately overrides Tailwind's built-in pure #fff so that
-     `text-white` can never render pure white anywhere in the app. */
-  --color-white: #f2f2ee;
+  /* Band-aware foregrounds.
+     These MUST be redeclared by each .band-* class, not aliased to a
+     second variable. A custom property is substituted where it is
+     DECLARED, so `--color-fg: var(--fg)` on :root would resolve once
+     against the root default and inherit that fixed value into every
+     band — the override would silently never apply. Defaults below
+     are the cream band's, which is the page ground. */
+  --color-fg: #111827;
+  --color-fg-mute: #4b5563;
+  --color-rule: rgb(8 35 63 / 0.24);
+  --color-accent: #c8322b;
 
-  /* --- families --- */
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  /* Tailwind's pure #fff is never correct on printed stock. */
+  --color-white: #faf3e3;
+
+  /* --- families ------------------------------------------ */
+  /* Oswald is the condensed civic-poster voice: tall, narrow,
+     authoritative at large sizes and still legible small. */
+  --font-display: var(--font-oswald), "Arial Narrow", ui-sans-serif, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
-  /* --- type scale --- */
-  --text-hero: clamp(2.75rem, 8vw, 6.5rem);
-  --text-hero--line-height: 0.95;
-  --text-hero--letter-spacing: -0.03em;
+  /* --- type scale ---------------------------------------- */
+  /* Condensed faces carry more size at the same measure, so the
+     hero runs larger here than a normal-width face would allow. */
+  --text-hero: clamp(3rem, 9.5vw, 7.5rem);
+  --text-hero--line-height: 0.92;
+  --text-hero--letter-spacing: -0.01em;
 
-  --text-section: clamp(1.75rem, 4vw, 3rem);
+  --text-section: clamp(1.875rem, 4.5vw, 3.25rem);
   --text-section--line-height: 1;
-  --text-section--letter-spacing: -0.02em;
+  --text-section--letter-spacing: -0.005em;
 
   --text-statement: clamp(1.5rem, 3vw, 2.25rem);
   --text-statement--line-height: 1.05;
-  --text-statement--letter-spacing: -0.02em;
 
   --text-body: 1.0625rem;
-  --text-body--line-height: 1.5;
+  --text-body--line-height: 1.6;
 
   --text-meta: 0.75rem;
   --text-meta--line-height: 1.4;
-  --text-meta--letter-spacing: 0.12em;
+  --text-meta--letter-spacing: 0.16em;
 
-  /* --- geometry --- */
-  --radius-card: 14px;
+  /* --- breakpoints ---------------------------------------- */
+  /* Large phones. Tailwind ships nothing below `sm` (40rem), and
+     the motif strip needs one step in between. */
+  --breakpoint-xs: 26rem;
+
+  /* --- geometry ------------------------------------------ */
+  /* Printed placards have corners, not radii. 2px is the ink
+     line; 6px is the offset of the second colour pass. */
+  --radius-card: 2px;
 }
 
+/* ============================================================
+   TEXTURE
+   Two lightweight, dependency-free passes:
+   grain  — fractal-noise SVG, sells "printed on paper"
+   halftone — dot screen, sells "offset print"
+   Both are pure CSS backgrounds; no image assets ship.
+   ============================================================ */
 @layer base {
+  :root {
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: var(--color-bg);
-    color: var(--color-white);
+    background-color: var(--color-cream);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-body);
-    line-height: 1.5;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    /* Offset shadows and rotated stamps must never widen the page. */
     overflow-x: hidden;
   }
 
-  /* Lime focus ring, visible on every interactive element. */
+  /* Red focus ring: reads on cream, navy and sky alike. */
   :focus-visible {
-    outline: 2px solid var(--color-lime);
+    outline: 3px solid var(--color-red);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 2px;
+  }
+
+  /* On red itself the ring flips to paper so it stays visible. */
+  .band-red :focus-visible {
+    outline-color: var(--color-paper);
   }
 
   ::selection {
-    background-color: var(--color-lime);
-    color: var(--color-bg);
+    background-color: var(--color-red);
+    color: var(--color-paper);
   }
 }
 
 @layer components {
   /* ----------------------------------------------------------
-     THE STICKER CARD — the deck's signature motif.
-     A dark card with a hard, un-blurred offset block of accent
-     colour behind it, like a sticker peeling off the page.
-
-     NOTE: `.sticker` must NOT create a stacking context — no
-     z-index, no transform, no opacity on this element. A stacking
-     context paints its own background BEFORE its negative-z-index
-     descendants, which would flip the accent block on top of the
-     card and turn it into a solid slab of lime. Leaving it out
-     lets ::after join the ancestor context, where it paints before
-     the card background and correctly peeks out at bottom-right.
+     BANDS — the printed stack.
+     Each sets the four band-aware tokens plus its own ground.
+     `isolation: isolate` keeps the grain pseudo-element from
+     escaping into a neighbouring band's stacking context.
      ---------------------------------------------------------- */
-  .sticker {
+  .band {
     position: relative;
-    background-color: var(--color-card);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
+    isolation: isolate;
   }
 
-  .sticker::after {
+  /* Grain sits above the ground, below all content. */
+  .band::before {
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--grain);
+    background-size: 140px 140px;
+    mix-blend-mode: multiply;
+    opacity: var(--grain-strength, 0.055);
+  }
+
+  .band > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-cream {
+    --color-fg: var(--color-ink);
+    --color-fg-mute: var(--color-ink-mute);
+    --color-rule: color-mix(in srgb, var(--color-navy) 24%, transparent);
+    --color-accent: var(--color-red);
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+  }
+
+  .band-navy {
+    --color-fg: var(--color-paper);
+    --color-fg-mute: var(--color-sky);
+    --color-rule: color-mix(in srgb, var(--color-sky) 34%, transparent);
+    --color-accent: var(--color-red);
+    background-color: var(--color-navy);
+    color: var(--color-paper);
+    /* Noise multiplies to nothing on dark ground — screen it. */
+    --grain-strength: 0.14;
+  }
+
+  .band-navy::before {
+    mix-blend-mode: screen;
+  }
+
+  .band-red {
+    --color-fg: var(--color-paper);
+    /* Paper at 82% still clears 4.5:1 on this red. */
+    --color-fg-mute: color-mix(in srgb, var(--color-paper) 82%, transparent);
+    --color-rule: color-mix(in srgb, var(--color-paper) 38%, transparent);
+    --color-accent: var(--color-paper);
+    background-color: var(--color-red);
+    color: var(--color-paper);
+    --grain-strength: 0.1;
+  }
+
+  .band-red::before {
+    mix-blend-mode: screen;
+  }
+
+  /* ----------------------------------------------------------
+     HALFTONE — the offset dot screen.
+     Applied as a decorative layer, always aria-hidden, always
+     masked so it fades rather than ending on a hard edge.
+     ---------------------------------------------------------- */
+  .halftone {
+    background-image: radial-gradient(
+      currentColor 1.1px,
+      transparent 1.2px
+    );
+    background-size: 7px 7px;
+    opacity: 0.18;
+  }
+
+  .halftone-coarse {
+    background-image: radial-gradient(
+      currentColor 1.8px,
+      transparent 2px
+    );
+    background-size: 12px 12px;
+    opacity: 0.14;
+  }
+
+  /* Fade the screen out downward, like a printed gradient ramp. */
+  .halftone-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+    mask-image: linear-gradient(to bottom, #000, transparent);
+  }
+
+  .halftone-fade-t {
+    -webkit-mask-image: linear-gradient(to top, #000, transparent);
+    mask-image: linear-gradient(to top, #000, transparent);
+  }
+
+  /* ----------------------------------------------------------
+     THE PLACARD — this campaign's signature card.
+     A bordered block of stock with a hard, un-blurred second
+     colour pass offset behind it, like a two-plate poster print
+     that shifted on press. No blur, no radius, no gradient.
+
+     Implemented with box-shadow rather than a pseudo-element so
+     it composes safely inside grids and never creates the
+     stacking-context trap that an offset ::after would.
+     ---------------------------------------------------------- */
+  .placard {
+    position: relative;
+    border: 2px solid var(--placard-line, var(--color-navy));
     border-radius: var(--radius-card);
-    background-color: var(--sticker-accent, var(--color-lime));
-    transform: translate(4px, 4px);
-    z-index: -1;
-    transition: transform 150ms ease-out;
+    background-color: var(--placard-bg, var(--color-paper));
+    color: var(--placard-fg, var(--color-ink));
+    box-shadow: 5px 5px 0 0 var(--placard-accent, var(--color-red));
+    transition:
+      box-shadow 160ms ease-out,
+      transform 160ms ease-out;
   }
 
   @media (min-width: 768px) {
-    .sticker::after {
-      transform: translate(6px, 6px);
+    .placard {
+      box-shadow: 7px 7px 0 0 var(--placard-accent, var(--color-red));
     }
   }
 
-  .sticker-lime {
-    --sticker-accent: var(--color-lime);
-  }
-
-  .sticker-magenta {
-    --sticker-accent: var(--color-magenta);
-  }
-
-  /* Hover shifts the offset only — nothing else moves. */
+  /* Hover deepens the second pass and lifts the sheet slightly. */
   @media (hover: hover) {
-    .sticker:hover::after {
-      transform: translate(6px, 6px);
+    .placard-interactive:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 9px 9px 0 0 var(--placard-accent, var(--color-red));
     }
+  }
 
-    @media (min-width: 768px) {
-      .sticker:hover::after {
-        transform: translate(9px, 9px);
-      }
-    }
+  .placard-red {
+    --placard-accent: var(--color-red);
+  }
+  .placard-navy {
+    --placard-accent: var(--color-navy);
+  }
+  .placard-sky {
+    --placard-accent: var(--color-sky);
+  }
+
+  /* Inverted placard for use on cream bands where a dark block
+     is needed to carry weight (the flagship, the close). */
+  .placard-inverse {
+    --placard-bg: var(--color-navy);
+    --placard-fg: var(--color-paper);
+    --placard-line: var(--color-navy);
+    /* Re-point the band tokens too: an inverse sheet is a navy
+       ground, so anything inside it must read as if on band-navy. */
+    --color-fg: var(--color-paper);
+    --color-fg-mute: var(--color-sky);
+    --color-rule: color-mix(in srgb, var(--color-sky) 34%, transparent);
+  }
+
+  /* A placard's offset pass is invisible when it matches the band it
+     sits on. `alternate()` cycles colours without knowing the ground,
+     so the band corrects the one collision it can cause. Each swap is
+     chosen to keep the grid alternating rather than to merely differ. */
+  .band-navy .placard-navy {
+    --placard-accent: var(--color-cream);
+  }
+
+  .band-red .placard-red {
+    --placard-accent: var(--color-sky);
+  }
+
+  /* ----------------------------------------------------------
+     THE STAMP — rotated red seal used for slogans.
+     Rotation is on a wrapper so text stays hit-testable and the
+     transform never leaks into layout width.
+     ---------------------------------------------------------- */
+  .stamp {
+    display: inline-block;
+    transform: rotate(-2.5deg);
+    border: 2px solid currentColor;
+    border-radius: 2px;
+  }
+
+  /* ----------------------------------------------------------
+     RULE STACK — the triple bar under campaign headings.
+     Navy / red / sky, the poster's full chord in 3 lines.
+     ---------------------------------------------------------- */
+  .rule-stack {
+    display: flex;
+    height: 6px;
+    width: 5.5rem;
+    overflow: hidden;
+    border-radius: 1px;
+  }
+
+  .rule-stack > span {
+    flex: 1 1 0;
   }
 }
 
@@ -148,5 +340,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .placard-interactive:hover {
+    transform: none !important;
   }
 }

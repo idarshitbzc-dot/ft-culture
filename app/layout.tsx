@@ -1,11 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Oswald } from "next/font/google";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+/**
+ * Oswald is the campaign voice: a condensed grotesque that holds
+ * its weight at poster scale and still sets clean at 12px, which
+ * is what lets one family carry both the hero and the chips.
+ */
+const oswald = Oswald({
+  variable: "--font-oswald",
   subsets: ["latin"],
-  weight: ["800", "900"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
@@ -26,11 +32,11 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Darshit Shah — for Culture Secretary, FT CEPT",
   description:
-    "300 of us. One stage. Zero excuses. A whole cultural year for the Faculty of Technology — actually planned, actually happening.",
+    "One FT. One Culture. A whole cultural year for the Faculty of Technology — actually planned, actually happening.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B0B0D",
+  themeColor: "#08233F",
 };
 
 export default function RootLayout({
@@ -45,9 +51,19 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${archivo.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${oswald.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {/* Reveal server-renders its hidden state as an inline style so
+            the animation cannot flash. With scripting off nothing ever
+            un-hides it and the page would read as blank — this puts it
+            back, and costs nothing when scripting is on. */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

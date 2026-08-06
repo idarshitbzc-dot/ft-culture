@@ -24,6 +24,11 @@ export function Reveal({
 
   return (
     <motion.div
+      // The initial `opacity: 0` is server-rendered inline, so without
+      // JS every revealed block would stay invisible and the page would
+      // read as blank. `data-reveal` is the hook the <noscript> rule in
+      // globals.css uses to force these back to visible.
+      data-reveal
       className={className}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
