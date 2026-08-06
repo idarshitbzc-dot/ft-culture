@@ -1,5 +1,5 @@
 /**
- * Holding copy for the three pages that need a backend before they can work.
+ * Holding copy for the pages that aren't ready to show their real content yet.
  * These are live, public pages — the tone is a promise, not an apology.
  */
 
@@ -11,6 +11,19 @@ export type ComingSoonPage = {
   promise: string;
   /** Where to send someone who arrived here wanting something to read. */
   cta: { label: string; href: string };
+};
+
+/**
+ * The calendar is de-listed from the nav — this only catches anyone who still
+ * has the URL. The rhythm is fixed copy; the dates deliberately are not.
+ */
+export const calendarSoon: ComingSoonPage = {
+  kicker: "PUBLISHED IN WEEK ONE",
+  headline: "THE CALENDAR DROPS IN WEEK ONE.",
+  subline: "locked with the student committee first. then it goes public.",
+  promise:
+    "a theme fest every two weeks, an open stage and a spotlight every month — that rhythm is already non-negotiable. the dates aren't mine to announce yet. i'm not publishing a calendar i haven't sat down with the student committee to lock, so it goes up here in week one, in full, and it doesn't move after that.",
+  cta: { label: "READ THE MANIFESTO", href: "/manifesto" },
 };
 
 export const pollsSoon: ComingSoonPage = {

@@ -282,13 +282,15 @@ export const eventsWithTaste = {
   ] as NamedItem[],
 };
 
-/** Slide 10 lives on its own page — this is the pointer to it. */
+/**
+ * Slide 10, stated as a promise only. The dates get locked with the student
+ * committee in week one, so there is no page to link out to until then.
+ */
 export const calendarTeaser = {
   kicker: "09 — THE CALENDAR",
   headline: "THE FT CULTURAL CALENDAR · 2026.",
   subline:
     "A theme fest every 2 weeks · open stage + spotlight every month · published in week one.",
-  cta: { label: "SEE THE FULL CALENDAR", href: "/calendar" },
 };
 
 /** Slide 11 — how it actually runs. */

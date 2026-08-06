@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ButtonLink } from "@/components/primitives/Button";
 import { Chip } from "@/components/primitives/Chip";
 import { Kicker } from "@/components/primitives/Kicker";
 import { Reveal } from "@/components/primitives/Reveal";
@@ -250,18 +249,14 @@ export default function Page() {
           <ItemGrid items={eventsWithTaste.items} />
         </Section>
 
-        {/* ---------------- 09 — THE CALENDAR (slide 10) ---------------- */}
+        {/* ---------------- 09 — THE CALENDAR (slide 10)
+            Copy only. The dates aren't public until week one, so there is
+            deliberately nothing to click through to here. */}
         <Section
           kicker={calendarTeaser.kicker}
           headline={calendarTeaser.headline}
           subline={calendarTeaser.subline}
-        >
-          <Reveal>
-            <ButtonLink href={calendarTeaser.cta.href}>
-              {calendarTeaser.cta.label}
-            </ButtonLink>
-          </Reveal>
-        </Section>
+        />
 
         {/* ---------------- 10 — EXECUTION (slide 11) ----------------
             Plain cards on purpose: this is the boring machinery, and
