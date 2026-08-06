@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Experience } from "@/components/Experience";
+import { CampaignPoster } from "@/components/CampaignPoster";
 import { ButtonLink } from "@/components/primitives/Button";
 import { Chip } from "@/components/primitives/Chip";
 import { Kicker } from "@/components/primitives/Kicker";
@@ -29,22 +30,26 @@ export default function Home() {
             className="halftone-coarse halftone-fade-t pointer-events-none absolute inset-0 text-sky"
           />
 
-          {/* Watermark stays clear of the copy column: it is hidden
-              below lg, where the text runs full width. */}
+          {/* The watermark sits behind the copy column only. On lg+ the
+              poster takes the right side, so the watermark is pulled
+              left of it rather than stacked underneath. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute top-1/2 right-[-3rem] hidden -translate-y-1/2 select-none font-display text-[26rem] leading-none font-bold text-paper opacity-[0.05] lg:block xl:text-[34rem]"
+            className="pointer-events-none absolute top-1/2 right-[38%] hidden -translate-y-1/2 select-none font-display text-[22rem] leading-none font-bold text-paper opacity-[0.045] lg:block xl:text-[26rem]"
           >
             {hero.watermark}
           </span>
 
           <MotifWash
             name="sitar"
-            className="right-[6%] bottom-[-2rem] hidden size-72 text-sky opacity-[0.13] lg:block"
+            className="bottom-[-2rem] left-[-3rem] hidden size-72 text-sky opacity-[0.1] lg:block"
           />
 
           <div className="relative mx-auto w-full max-w-6xl">
-            <div className="max-w-full lg:max-w-[62%]">
+            {/* Copy leads on every width; the poster follows it in the
+                source order so a phone reads the message before the art. */}
+            <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+              <div className="max-w-full">
               <Reveal>
                 <Kicker tone="accent">{hero.kicker}</Kicker>
               </Reveal>
@@ -100,7 +105,17 @@ export default function Home() {
                   </ButtonLink>
                 </div>
               </Reveal>
+              </div>
 
+              {/* The poster. Capped in px rather than a fraction: at
+                  1:2.12 a percentage width would grow it taller than
+                  the viewport on wide screens. */}
+              <Reveal index={6} className="lg:justify-self-end">
+                <CampaignPoster
+                  priority
+                  className="w-full max-w-[300px] sm:max-w-[340px] lg:w-[300px] lg:max-w-none xl:w-[340px]"
+                />
+              </Reveal>
             </div>
           </div>
         </section>
@@ -236,33 +251,42 @@ export default function Home() {
               </p>
             </Reveal>
 
-            {/* The ballot slip itself. */}
-            <Reveal index={3}>
-              <div className="mt-12 inline-block max-w-full border-2 border-cream bg-cream p-6 shadow-[8px_8px_0_0_var(--color-red)] sm:p-8">
-                <p className="font-mono text-meta font-bold uppercase tracking-[0.16em] text-red">
-                  {hero.vote}
-                </p>
-                <p className="mt-4 font-display text-[clamp(2rem,6vw,3.5rem)] leading-none font-bold uppercase text-navy">
-                  {ballot.name}
-                </p>
-                <p className="mt-4 max-w-sm font-mono text-meta font-bold uppercase tracking-[0.16em] text-ink-mute">
-                  {ballot.role}
-                </p>
-                <div aria-hidden className="rule-stack mt-6">
-                  <span className="bg-navy" />
-                  <span className="bg-red" />
-                  <span className="bg-sky" />
+            {/* The ballot slip, with the poster alongside it. `items-end`
+                bottom-aligns the two so the slip sits on the poster's
+                baseline instead of floating against its middle. */}
+            <div className="mt-12 flex flex-col gap-12 md:flex-row md:items-end md:gap-14">
+              <Reveal index={3} className="min-w-0">
+                <div className="inline-block max-w-full border-2 border-cream bg-cream p-6 shadow-[8px_8px_0_0_var(--color-red)] sm:p-8">
+                  <p className="font-mono text-meta font-bold uppercase tracking-[0.16em] text-red">
+                    {hero.vote}
+                  </p>
+                  <p className="mt-4 font-display text-[clamp(2rem,6vw,3.5rem)] leading-none font-bold uppercase text-navy">
+                    {ballot.name}
+                  </p>
+                  <p className="mt-4 max-w-sm font-mono text-meta font-bold uppercase tracking-[0.16em] text-ink-mute">
+                    {ballot.role}
+                  </p>
+                  <div aria-hidden className="rule-stack mt-6">
+                    <span className="bg-navy" />
+                    <span className="bg-red" />
+                    <span className="bg-sky" />
+                  </div>
                 </div>
-              </div>
-            </Reveal>
 
-            <Reveal index={4}>
-              <div className="mt-12">
-                <ButtonLink href={ballot.cta.href}>
-                  {ballot.cta.label}
-                </ButtonLink>
-              </div>
-            </Reveal>
+                <div className="mt-12">
+                  <ButtonLink href={ballot.cta.href}>
+                    {ballot.cta.label}
+                  </ButtonLink>
+                </div>
+              </Reveal>
+
+              <Reveal index={4} className="shrink-0">
+                <CampaignPoster
+                  className="w-full max-w-[260px] sm:max-w-[280px]"
+                  sizes="(min-width: 640px) 280px, 260px"
+                />
+              </Reveal>
+            </div>
           </div>
         </section>
       </main>
